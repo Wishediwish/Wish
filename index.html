@@ -3,7 +3,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Сон или Реальность?</title>
+  <title>Путь Итами</title>
   <style>
     body {
       margin: 0;
@@ -18,18 +18,29 @@
     }
     .screen {
       display: none;
-      padding: 2em;
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
+      padding: 2em;
     }
     .active {
       display: block;
     }
     .container {
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 12px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 800px;
       padding: 2em;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid rgba(255, 200, 255, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 200, 255, 0.5);
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -60%); }
+      to   { opacity: 1; transform: translate(-50%, -50%); }
     }
     h1 {
       text-align: center;
@@ -38,7 +49,7 @@
     button {
       margin: 1em 0;
       background: #444;
-      border: none;
+      border: 2px solid rgba(255, 200, 255, 0.8);
       padding: 1em;
       color: white;
       border-radius: 8px;
