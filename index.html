@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Путь Итами</title>
   <style>
     body {
@@ -48,6 +48,16 @@
     button:hover {
       background: #666;
     }
+    .quiz {
+      margin-top: 1em;
+    }
+    .quiz p {
+      margin-bottom: 0.5em;
+    }
+    .quiz button {
+      width: auto;
+      margin-right: 0.5em;
+    }
   </style>
 </head>
 <body>
@@ -57,7 +67,6 @@
     let currentSceneIndex = 0;
 
     function showScene(index) {
-      const scenes = window.scenes;
       const scene = scenes[index];
       const container = document.getElementById('game-container');
       document.body.style.backgroundImage = scene.background ? `url('${scene.background}')` : 'none';
@@ -67,18 +76,48 @@
         html += `<h1>${scene.title}</h1>`;
       }
 
-      scene.messages.forEach(message => {
-        html += `<p>${message}</p>`;
-      });
+      if (scene.messages) {
+        scene.messages.forEach(msg => {
+          html += `<p>${msg}</p>`;
+        });
+      }
 
       if (scene.actions) {
-        scene.actions.forEach(action => {
-          html += `<button onclick="showScene(${action.nextScene})">${action.text}</button>`;
+        scene.actions.forEach(choice => {
+          html += `<button onclick="showScene(${choice.nextScene})">${choice.text}</button>`;
+        });
+      }
+
+      if (scene.quiz) {
+        scene.quiz.forEach((question, qIndex) => {
+          html += `<div class="quiz"><p><strong>Вопрос ${qIndex + 1}:</strong> ${question.question}</p>`;
+          question.options.forEach((opt, oIndex) => {
+            html += `<button onclick="handleAnswer(${index}, ${qIndex}, ${oIndex})">${opt}</button>`;
+          });
+          html += `</div>`;
         });
       }
 
       html += `</div></div>`;
       container.innerHTML = html;
+    }
+
+    function handleAnswer(sceneIndex, questionIndex, optionIndex) {
+      const scene = scenes[sceneIndex];
+      const question = scene.quiz[questionIndex];
+      const correct = question.correct;
+
+      const container = document.getElementById('game-container');
+      let result = '';
+
+      if (optionIndex === correct) {
+        result = '<p>Верно!</p>';
+      } else {
+        result = '<p>Неверно, попробуй снова.</p>';
+      }
+
+      result += `<button onclick="showScene(${sceneIndex + 1})">Продолжить</button>`;
+      container.innerHTML = `<div class="screen active"><div class="container">${result}</div></div>`;
     }
 
     window.onload = () => showScene(currentSceneIndex);
