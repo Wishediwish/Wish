@@ -48,51 +48,96 @@
     button:hover {
       background: #666;
     }
-    .quiz {
-      margin-top: 1em;
-    }
-    .quiz p {
-      margin-bottom: 0.5em;
-    }
-    .quiz button {
-      width: auto;
-      margin-right: 0.5em;
-    }
   </style>
 </head>
 <body>
   <div id="game-container"></div>
-  <script src="scenes.js"></script>
   <script>
-    const scenes = window.scenes;
-    let currentSceneIndex = 0;
+    const scenes = [
+      {
+        id: 1,
+        title: "Водопад Очищения",
+        background: "backgrounds/waterfall.jpg",
+        messages: [
+          "Итами просыпайся! Итамиии... ты в порядке?",
+          "Хух, я волновался что уже не получилось. Добро пожаловать. Нам с тобой предстоит пройти небольшое приключение и отыскать кое-что, оставленное тебе в этом месте.",
+          "Сейчас мы находимся у водопада очищения. Это место служит защитной стеной, здесь нет обходных путей. Путь только один — сквозь водопад. Он не пропускает всё, что не должно пройти.",
+          "Сложно поверить, но раньше его тут не было. Это была просто тропа. Нужно поторопиться, у нас не так много времени."
+        ],
+        actions: [
+          { text: "Ты слышишь чей-то голос, кто-то зовёт тебя — Проснуться.", nextStep: 1 },
+          { text: "Осмотреться вокруг.", nextStep: 2 },
+          { text: "... Проследовать за духом сквозь водопад.", nextScene: 2 }
+        ]
+      },
+      {
+        id: 2,
+        title: "Астрономическая Степь",
+        background: "backgrounds/starfield.jpg",
+        messages: [
+          "Место, где мысли и мечты отображаются в виде звёзд. Считается, что если коснуться звезды на воде, можно узнать, что она значит.",
+          "Видишь замок, к которому ведёт степь? Это место, куда мы с тобой направляемся. Хочешь попробовать устоять на воде и коснуться отражения звезды?"
+        ],
+        actions: [
+          { text: "Ступить на воду и попытаться коснуться звезды.", nextScene: 3 },
+          { text: "Следовать дальше по пути к Замку.", nextScene: 3 }
+        ]
+      }
+    ];
+
+    let currentScene = 0;
+    let messageIndex = 0;
 
     function showScene(index) {
-      const scene = scenes[index];
-      const container = document.getElementById('game-container');
-      document.body.style.backgroundImage = scene.background ? `url('${scene.background}')` : 'none';
+      currentScene = index;
+      messageIndex = 0;
+      renderScene();
+    }
 
+    function renderScene() {
+      const container = document.getElementById("game-container");
+      const scene = scenes[currentScene];
+      document.body.style.backgroundImage = `url('${scene.background}')`;
       let html = `<div class="screen active"><div class="container">`;
-      if (scene.title) {
-        html += `<h1>${scene.title}</h1>`;
+      html += `<h1>${scene.title}</h1>`;
+      for (let i = 0; i <= messageIndex; i++) {
+        if (scene.messages[i]) {
+          html += `<p>${scene.messages[i]}</p>`;
+        }
       }
-      if (scene.messages) {
-        scene.messages.forEach(m => {
-          html += `<p>${m}</p>`;
-        });
-      }
-
-      if (scene.actions) {
-        scene.actions.forEach(action => {
-          html += `<button onclick="showScene(${action.nextScene})">${action.text}</button>`;
-        });
-      }
-
+      html += renderActions(scene);
       html += `</div></div>`;
       container.innerHTML = html;
     }
 
-    window.onload = () => showScene(currentSceneIndex);
+    function renderActions(scene) {
+      let output = "";
+      if (currentScene === 0) {
+        if (messageIndex === 0) {
+          output += `<button onclick="nextStep(1)">${scene.actions[0].text}</button>`;
+        } else if (messageIndex === 2) {
+          output += `<button onclick="nextStep(2)">${scene.actions[1].text}</button>`;
+        } else if (messageIndex === 3) {
+          output += `<button onclick="goToScene(1)">${scene.actions[2].text}</button>`;
+        }
+      } else {
+        scene.actions.forEach(action => {
+          output += `<button onclick="goToScene(${action.nextScene})">${action.text}</button>`;
+        });
+      }
+      return output;
+    }
+
+    function nextStep(step) {
+      messageIndex = step + 1;
+      renderScene();
+    }
+
+    function goToScene(index) {
+      showScene(index);
+    }
+
+    window.onload = () => showScene(0);
   </script>
 </body>
 </html>
