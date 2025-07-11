@@ -18,29 +18,18 @@
     }
     .screen {
       display: none;
-      max-width: 800px;
-      margin: auto;
       padding: 2em;
+      max-width: 700px;
+      margin: auto;
     }
     .active {
       display: block;
     }
     .container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      max-width: 800px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 12px;
       padding: 2em;
-      background: rgba(0, 0, 0, 0.5);
-      border: 2px solid rgba(255, 200, 255, 0.8);
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(255, 200, 255, 0.5);
-      animation: fadeIn 0.5s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translate(-50%, -60%); }
-      to   { opacity: 1; transform: translate(-50%, -50%); }
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
     }
     h1 {
       text-align: center;
@@ -48,8 +37,8 @@
     }
     button {
       margin: 1em 0;
-      background: #444;
-      border: 2px solid rgba(255, 200, 255, 0.8);
+      background: #5a3e7c;
+      border: none;
       padding: 1em;
       color: white;
       border-radius: 8px;
@@ -58,7 +47,7 @@
       transition: 0.3s;
     }
     button:hover {
-      background: #666;
+      background: #7a52a3;
     }
     .quiz {
       margin-top: 1em;
