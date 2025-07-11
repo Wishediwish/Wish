@@ -1,7 +1,8 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Путь Итами</title>
   <style>
     body {
@@ -36,7 +37,7 @@
     }
     button {
       margin: 1em 0;
-      background: #444;
+      background: #5e5e7b;
       border: none;
       padding: 1em;
       color: white;
@@ -46,7 +47,7 @@
       transition: 0.3s;
     }
     button:hover {
-      background: #666;
+      background: #8c8ca6;
     }
     .quiz {
       margin-top: 1em;
@@ -57,6 +58,7 @@
     .quiz button {
       width: auto;
       margin-right: 0.5em;
+      margin-bottom: 0.5em;
     }
   </style>
 </head>
@@ -65,40 +67,38 @@
   <script src="scenes.js"></script>
   <script>
     let currentSceneIndex = 0;
+    const scenes = window.scenes;
 
     function showScene(index) {
       const scene = scenes[index];
       const container = document.getElementById('game-container');
       document.body.style.backgroundImage = scene.background ? `url('${scene.background}')` : 'none';
 
-      let html = `<div class="screen active"><div class="container">`;
+      let html = '<div class="screen active"><div class="container">';
       if (scene.title) {
-        html += `<h1>${scene.title}</h1>`;
+        html += '<h1>' + scene.title + '</h1>';
       }
+      scene.messages.forEach(message => {
+        html += '<p>' + message + '</p>';
+      });
 
-      if (scene.messages) {
-        scene.messages.forEach(msg => {
-          html += `<p>${msg}</p>`;
+      if (scene.quiz) {
+        scene.quiz.forEach((question, qIndex) => {
+          html += '<div class="quiz"><p><strong>Вопрос ' + (qIndex + 1) + ':</strong> ' + question.q + '</p>';
+          question.options.forEach((opt, oIndex) => {
+            html += `<button onclick="handleAnswer(${index}, ${qIndex}, ${oIndex})">${opt}</button>`;
+          });
+          html += '</div>';
         });
       }
 
       if (scene.actions) {
-        scene.actions.forEach(choice => {
-          html += `<button onclick="showScene(${choice.nextScene})">${choice.text}</button>`;
+        scene.actions.forEach(action => {
+          html += `<button onclick="showScene(${action.nextScene})">${action.text}</button>`;
         });
       }
 
-      if (scene.quiz) {
-        scene.quiz.forEach((question, qIndex) => {
-          html += `<div class="quiz"><p><strong>Вопрос ${qIndex + 1}:</strong> ${question.question}</p>`;
-          question.options.forEach((opt, oIndex) => {
-            html += `<button onclick="handleAnswer(${index}, ${qIndex}, ${oIndex})">${opt}</button>`;
-          });
-          html += `</div>`;
-        });
-      }
-
-      html += `</div></div>`;
+      html += '</div></div>';
       container.innerHTML = html;
     }
 
@@ -106,14 +106,17 @@
       const scene = scenes[sceneIndex];
       const question = scene.quiz[questionIndex];
       const correct = question.correct;
-
       const container = document.getElementById('game-container');
-      let result = '';
 
-      if (optionIndex === correct) {
-        result = '<p>Верно!</p>';
+      let result = '';
+      if (Array.isArray(correct)) {
+        result = correct[optionIndex]
+          ? '<p>Верно!</p>'
+          : '<p>Неверно, попробуй снова.</p>';
       } else {
-        result = '<p>Неверно, попробуй снова.</p>';
+        result = optionIndex === correct
+          ? '<p>Верно!</p>'
+          : '<p>Неверно, попробуй снова.</p>';
       }
 
       result += `<button onclick="showScene(${sceneIndex + 1})">Продолжить</button>`;
